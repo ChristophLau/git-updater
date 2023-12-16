@@ -9,12 +9,14 @@ function finish_line {
   echo -ne '\n'
 }
 
+SUPPORTED_BRANCHES=("main" "develop")
+
 for DIRECTORY in $ROOTDIR/*; do
   REPOSITORY=${DIRECTORY##*/}
   replace_line "ℹ️ " $REPOSITORY "updating"
   cd $DIRECTORY
   BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
-  if [[ $BRANCH != "main" && $BRANCH != "develop" ]]; then
+  if [[ ! ${SUPPORTED_BRANCHES[@]} =~ $BRANCH ]]; then
     replace_line "⛔️" $REPOSITORY "invalid branch \"$BRANCH\"" && finish_line
     continue;
   fi
